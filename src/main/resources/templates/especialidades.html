@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Médicos y Especialidades</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        /* Cuadro más pequeño y centrado */
+        .card-doctores {
+            background: white;
+            border-radius: 1.6rem;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            overflow: hidden;
+            max-width: 800px;        /* ← Más pequeño que antes (antes era 1100px) */
+            margin: 0 auto;
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+            color: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+        .header-card i { font-size: 3rem; margin-bottom: 0.8rem; }
+        .header-card h1 { font-size: 2rem; font-weight: 800; margin: 0; }
+        .header-card p { font-size: 1.05rem; opacity: 0.9; margin-top: 0.4rem; }
+
+        .filtros-container { padding: 1.5rem; background: #f8f9fa; }
+        .btn-filtro {
+            border-radius: 50px;
+            padding: 0.55rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .search-box {
+            max-width: 320px;
+            margin: 1rem auto 0;
+        }
+
+        .table-container { padding: 1.5rem; }
+        .table th { font-size: 0.98rem; }
+        .table td { font-size: 0.95rem; }
+
+        .badge-estado {
+            padding: 0.4em 0.9em;
+            font-size: 0.85rem;
+        }
+
+        .btn-volver {
+            border-radius: 50px;
+            padding: 0.75rem 2rem;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 576px) {
+            .card-doctores { max-width: 95%; padding: 0.5rem; }
+            .header-card { padding: 1.5rem 1rem; }
+            .header-card h1 { font-size: 1.7rem; }
+            .header-card i { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card-doctores">
+    <div class="header-card">
+        <i class="bi bi-person-heart"></i>
+        <h1>Médicos y Especialidades</h1>
+        <p>Encuentra al especialista ideal</p>
+    </div>
+
+    <div class="filtros-container">
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+            <button type="button" class="btn btn-success text-white btn-filtro" onclick="filtrarEstado('Activo')">
+                Activos
+            </button>
+            <button type="button" class="btn btn-danger text-white btn-filtro" onclick="filtrarEstado('Descanso')">
+                En Descanso
+            </button>
+            <button type="button" class="btn btn-primary text-white btn-filtro" onclick="filtrarEstado('Todos')">
+                Ver Todos
+            </button>
+        </div>
+
+        <div class="search-box position-relative">
+            <i class="bi bi-search"></i>
+            <input type="text" id="buscadorArea" class="form-control ps-5" placeholder="Buscar especialidad..." onkeyup="filtrarArea()">
+        </div>
+    </div>
+
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="tablaDoctores">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Médico</th>
+                        <th>Estado</th>
+                        <th>Especialidad</th>
+                        <th>Horario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="doctor : ${doctors}"
+                        th:attr="data-estado=${doctor.activo ? 'Activo' : 'Descanso'}, data-area=${doctor.areaMedica != null ? doctor.areaMedica : ''}">
+                        <td th:text="${doctor.id}"></td>
+                        <td><strong th:text="${doctor.firstName + ' ' + doctor.lastName}"></strong></td>
+                        <td>
+                            <span th:if="${doctor.activo}" class="badge bg-success text-white badge-estado">Activo</span>
+                            <span th:if="${!doctor.activo}" class="badge bg-danger text-white badge-estado">Descanso</span>
+                        </td>
+                        <td th:text="${doctor.areaMedica != null ? doctor.areaMedica : 'General'}"></td>
+                        <td th:if="${doctor.activo}">Lun-Vie 9:00 - 19:30</td>
+                        <td th:if="${!doctor.activo}" class="text-muted">No disponible</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/index" class="btn btn-secondary btn-volver">
+                Volver
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filtrarEstado(estado) {
+        const filas = document.querySelectorAll('#tablaDoctores tbody tr');
+        filas.forEach(tr => {
+            const actual = tr.getAttribute('data-estado');
+            tr.style.display = (estado === 'Todos' || actual === estado) ? '' : 'none';
+        });
+        filtrarArea();
+    }
+
+    function filtrarArea() {
+        const input = document.getElementById('buscadorArea').value.toLowerCase();
+        const filas = document.querySelectorAll('#tablaDoctores tbody tr');
+        filas.forEach(tr => {
+            const area = (tr.getAttribute('data-area') || '').toLowerCase();
+            const visible = tr.style.display !== 'none';
+            if ((input === '' || area.includes(input)) && visible) {
+                tr.style.display = '';
+            } else if (input !== '' && !area.includes(input)) {
+                tr.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pacientes Asignados - Doctor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+        .pacientes-card {
+            background: #fff;
+            border-radius: 22px;
+            box-shadow: 0 8px 34px rgba(13,110,253,0.09);
+            max-width: 1000px;
+            margin: 48px auto 0 auto;
+            padding: 3.1rem 2.7rem 2.1rem 2.7rem;
+            width: 97vw;
+        }
+        .logo {
+            width: 90px; height: 90px; background: #198754;
+            color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.2em;
+            font-weight: bold;
+            margin: 0 auto 1.2em auto;
+            box-shadow: 0 4px 12px rgba(25,135,84,0.13);
+        }
+        h2 {
+            color: #198754;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        .alert {
+            border-radius: 10px;
+            font-size: 1.09rem;
+            margin-bottom: 20px;
+        }
+        .tabla-pacientes {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .tabla-pacientes th {
+            background: linear-gradient(95deg, #198754 50%, #36bb84 100%);
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.04em;
+            text-align: center;
+            border-bottom: none;
+        }
+        .tabla-pacientes td {
+            text-align: center;
+            vertical-align: middle;
+            font-size: 1em;
+        }
+        .btn-main {
+            background: linear-gradient(135deg, #198754, #36bb84 90%);
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            padding: 6px 16px;
+            margin-right: 2px;
+            font-size: 1em;
+            transition: background 0.13s;
+        }
+        .btn-main:hover {
+            background: linear-gradient(135deg, #125231, #1d8348 90%);
+            color: #fff;
+        }
+        .volver-btn {
+            font-size: 1em;
+            margin-top: 22px;
+            border-radius: 12px;
+            padding: 8px 30px;
+            background: #6c757d;
+            color: #fff;
+        }
+        .volver-btn:hover { background: #495057; color: #fff; }
+        @media (max-width: 900px) { .pacientes-card { padding: 1.1rem 0.7rem; } }
+        @media (max-width: 600px) {
+            .pacientes-card { padding: 0.3rem 0.1rem; margin-top: 13px; }
+            h2 { font-size: 1.09em; }
+            .btn-main { font-size: 0.93em; padding: 5px 9px; }
+            .volver-btn { font-size: 0.95em; padding: 7px 14px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="pacientes-card">
+        <div class="logo"><i class="bi bi-people-fill"></i></div>
+        <h2>Mis Pacientes Atendidos</h2>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${#lists.isEmpty(pacientes)}" class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No has atendido pacientes aún.
+        </div>
+        <div th:unless="${#lists.isEmpty(pacientes)}" class="table-responsive">
+            <table class="table tabla-pacientes align-middle">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>DNI</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="paciente : ${pacientes}">
+                        <td th:text="${paciente.firstName} + ' ' + ${paciente.lastName}"></td>
+                        <td th:text="${paciente.dni}"></td>
+                        <td th:text="${paciente.email}"></td>
+                        <td th:text="${paciente.phone}"></td>
+                        <td>
+                            <a th:href="@{/doctor/paciente-detalle(id=${paciente.id})}" class="btn btn-main mb-1">
+                                <i class="bi bi-eye"></i> Ver Historial
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center">
+            <a href="/doctor/dashboard" class="volver-btn mt-3">
+                <i class="bi bi-arrow-left-circle"></i> Volver al Panel
+            </a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

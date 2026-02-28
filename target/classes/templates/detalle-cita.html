@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Cita - Citas Médicas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        .detalle-container {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 34px rgba(13,110,253,0.09);
+            max-width: 420px;
+            width: 97vw;
+            margin: 50px auto;
+            padding: 2.3rem 2.1rem 2.2rem 2.1rem;
+            text-align: left;
+        }
+        .logo {
+            width: 76px;
+            height: 76px;
+            background: #0d6efd;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            margin: 0 auto 1em auto;
+            box-shadow: 0 4px 11px rgba(13,110,253,0.13);
+        }
+        h3 {
+            color: #0d6efd;
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+        .detalle-item {
+            margin-bottom: 17px;
+            font-size: 1.1em;
+        }
+        .detalle-label {
+            font-weight: 500;
+            color: #0d6efd;
+            margin-right: 7px;
+        }
+        .detalle-valor {
+            font-weight: bold;
+            color: #232323;
+        }
+        .volver-btn {
+            margin-top: 22px;
+            border-radius: 12px;
+            padding: 9px 32px;
+            background: #6c757d;
+            color: #fff;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+        .volver-btn:hover { background: #495057; color: #fff; }
+    </style>
+</head>
+<body>
+<div class="detalle-container">
+    <div class="logo"><i class="bi bi-clipboard2-pulse"></i></div>
+    <h3>Detalle de Cita</h3>
+    <div class="detalle-item">
+        <span class="detalle-label">DNI Paciente:</span>
+        <span class="detalle-valor" th:text="${reserva.dniPaciente}">12345678</span>
+    </div>
+    <div class="detalle-item">
+        <span class="detalle-label">Fecha de Consulta:</span>
+        <span class="detalle-valor" th:text="${reserva.fechaConsulta}">22/10/2025 15:30</span>
+    </div>
+    <div class="detalle-item">
+        <span class="detalle-label">Área Médica:</span>
+        <span class="detalle-valor" th:text="${reserva.areaMedica}">Pediatría</span>
+    </div>
+    <div class="detalle-item">
+        <span class="detalle-label">Estado:</span>
+        <span class="detalle-valor" th:text="${reserva.status}">RESERVADA</span>
+    </div>
+    <div class="detalle-item">
+        <span class="detalle-label">Costo:</span>
+        <span class="detalle-valor" th:text="${#numbers.formatDecimal(reserva.costo, 2, 2)} + ' S/.'">35.90 S/.</span>
+    </div>
+    <div class="detalle-item">
+        <span class="detalle-label">Diagnóstico:</span>
+        <span class="detalle-valor" th:text="${reserva.diagnostico}">Revisión anual</span>
+    </div>
+    <div class="detalle-item" th:if="${reserva.diagnosis != null && #strings.contains(reserva.diagnosis,'Motivo de cancelación')}">
+        <span class="detalle-label">Motivo Cancelación:</span>
+        <span class="detalle-valor" th:text="${reserva.diagnosis}"></span>
+    </div>
+    <a href="/historial" class="volver-btn mt-4">
+        <i class="bi bi-arrow-left-circle"></i> Volver a historial
+    </a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

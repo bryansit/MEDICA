@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Citas Reprogramadas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #f8fafc 0%, #e3f6fe 100%); font-family: 'Segoe UI', Arial; }
+        .reprog-card { background: #fff; border-radius: 20px; box-shadow: 0 4px 22px rgba(13, 110, 253, 0.09); padding: 2.2rem 3vw 1.7rem 3vw; max-width: 680px; margin: 25px auto 14px auto; }
+        .reprog-title { color: #1464b3; text-align: center; font-size: 2em; font-weight: bold; margin-bottom: 22px; }
+        .reprog-cita { background: #eaf6ff; border-left: 5px solid #1976d2; border-radius: 9px; padding: 15px 15px 10px 19px; margin-bottom: 19px; }
+        .reprog-cita strong { color: #0d6efd;}
+        .badge-reprog { font-size: 0.93em; margin-left: 7px;}
+        .vac { color:#888; font-style: italic; text-align:center;}
+        .action-btns { margin-top: 9px; text-align: right;}
+        .action-btns .btn { margin-left: 7px;}
+        @media (max-width: 600px) {
+            .reprog-card { padding: 0.9rem 1vw; max-width: 97vw;}
+            .reprog-title { font-size: 1.3em;}
+        }
+    </style>
+</head>
+<body>
+<div class="reprog-card">
+    <div class="reprog-title">Citas Reprogramadas por Pacientes</div>
+    <div th:if="${#lists.isEmpty(citasReprogramadas)}" class="vac">
+        No tienes citas reprogramadas pendientes.
+    </div>
+    <div th:each="cita : ${citasReprogramadas}" class="reprog-cita">
+        <div>
+            <b><span th:text="${cita.patient.firstName}"></span> <span th:text="${cita.patient.lastName}"></span></b>
+            <span class="badge bg-warning text-dark badge-reprog">Solicitud pendiente</span>
+        </div>
+        <div><i class="bi bi-calendar-event"></i> Nueva Fecha: <b th:text="${cita.dateTime}"></b></div>
+        <div><i class="bi bi-clipboard2"></i> Área Médica: <span th:text="${cita.areaMedica}"></span></div>
+		<div th:if="${cita.diagnosis}">
+		    <i class="bi bi-info-circle"></i>
+		    <strong>Motivo:</strong> <span th:text="${cita.diagnosis}"></span>
+		</div>
+        <div class="action-btns">
+            <form th:action="@{/doctor/confirmarCita}" method="post" style="display:inline;">
+                <input type="hidden" name="citaId" th:value="${cita.id}" />
+                <button type="submit" class="btn btn-success btn-sm">
+                    <i class="bi bi-check-circle"></i> Confirmar
+                </button>
+            </form>
+			<form th:action="@{/doctor/cambiarFechaCita}" method="get" style="display:inline;">
+			    <input type="hidden" name="citaId" th:value="${cita.id}" />
+			    <button type="submit" class="btn btn-warning btn-sm">
+			        Cambiar Fecha
+			    </button>
+			</form>
+        </div>
+    </div>
+    <a href="/doctor/dashboard" class="btn btn-secondary mt-3">
+        <i class="bi bi-arrow-left-circle"></i> Volver al Panel
+    </a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</body>
+</html>

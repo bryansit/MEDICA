@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cancelar Cita - Citas Médicas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .main-card {
+            background: #fff;
+            border-radius: 22px;
+            box-shadow: 0 8px 34px rgba(13,110,253,0.09);
+            max-width: 530px;
+            width: 97vw;
+            padding: 2.5rem 2.1rem 2.2rem 2.1rem;
+            margin: 48px auto 24px auto;
+        }
+        h2 {
+            color: #0d6efd;
+            text-align: center;
+            font-weight: 700;
+        }
+        .alert { margin-bottom: 20px; border-radius: 10px; }
+        .volver-btn {
+            margin-top: 25px;
+            border-radius: 12px;
+            padding: 7px 28px;
+            background: #6c757d;
+            color: #fff;
+        }
+        .volver-btn:hover { background: #495057; color: #fff; }
+    </style>
+</head>
+<body>
+<div class="main-card">
+    <h2>Cancelar Cita</h2>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div th:if="${#lists.isEmpty(citas)}" class="alert alert-info">
+        No tienes citas activas para cancelar.
+    </div>
+    <div th:unless="${#lists.isEmpty(citas)}">
+        <form th:action="@{/cancelar}" method="post">
+            <div class="mb-3">
+                <label class="form-label">Selecciona cita</label>
+                <select class="form-select" name="citaId" required>
+                    <option value="" disabled selected>Selecciona una cita</option>
+                    <option th:each="cita : ${citas}" th:value="${cita.id}"
+                            th:text="${cita.areaMedica + ' - ' + cita.fechaConsulta}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="motivo" class="form-label">Motivo de cancelación (opcional)</label>
+                <textarea id="motivo" name="motivo" class="form-control" rows="2" maxlength="250" placeholder="¿Por qué deseas cancelar? (opcional)"></textarea>
+            </div>
+            <button type="submit" class="btn btn-danger w-100">
+                <i class="bi bi-x-circle"></i> Cancelar Cita
+            </button>
+        </form>
+    </div>
+    <div class="text-center mt-2">
+        <a href="/index" class="volver-btn">
+            <i class="bi bi-arrow-left-circle"></i> Volver al panel
+        </a>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel del Médico - Citas Médicas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome & Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        html, body { height: 100%; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f0fcff 0%, #dbeafe 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            display: flex; flex-direction: column;
+        }
+        .main-container {
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+        .doctor-card {
+            background: #fff;
+            border-radius: 26px;
+            box-shadow: 0 10px 42px rgba(13, 110, 253, 0.12);
+            padding: 3.5rem 4.5rem 2.7rem 4.5rem;
+            max-width: 1000px;
+            width: 98%;
+            margin: 48px auto 36px auto;
+            position: relative;
+        }
+        .logo {
+            width: 100px; height: 100px; background: #198754;
+            color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.7em;
+            font-weight: bold;
+            margin: 0 auto 1.3em auto;
+            box-shadow: 0 4px 18px rgba(25,135,84,0.13);
+        }
+        .doctor-slogan {
+            color: #198754;
+            font-size: 2.1em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.25em;
+            letter-spacing: 0.01em;
+        }
+        .doctor-welcome-msg {
+            font-size: 1.15em;
+            color: #505b67;
+            text-align: center;
+            margin-bottom: 9px;
+        }
+        .doctor-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 34px;
+            margin: 54px 0 30px 0;
+        }
+        .doctor-nav-btn {
+            background: linear-gradient(136deg, #198754, #27ae60 90%);
+            color: #FFF;
+            font-size: 1.09em;
+            padding: 1.5em 0.9em 1.18em 0.9em;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 3px 12px rgba(25,135,84,0.07);
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.48em;
+            font-weight: 500; transition: background 0.15s, transform 0.16s;
+            text-align: center;
+        }
+        .doctor-nav-btn i {
+            font-size: 1.47em;
+            margin-bottom: 0.14em;
+        }
+        .doctor-nav-btn:hover, .doctor-nav-btn:focus {
+            background: linear-gradient(135deg, #145a32 75%, #1d8348 100%);
+            transform: translateY(-2px) scale(1.03);
+            color: #fff;
+        }
+        .profile-dropdown {
+            position: absolute; top: 40px; right: 80px;
+        }
+        .footer {
+            width: 100%;
+            background: #f0fcff;
+            color: #343a40;
+            font-size: 1.03em;
+            text-align: center;
+            padding: 22px 0 18px 0;
+            margin-top: auto;
+            border-top: 1px solid #c7e3fa;
+            letter-spacing: 0.04em;
+        }
+        @media (max-width: 1200px) {
+            .doctor-card { padding: 2.5rem 1.2rem 1.6rem 1.2rem; max-width: 97vw; }
+            .profile-dropdown { right: 30px; }
+        }
+        @media (max-width: 900px) {
+            .doctor-card { padding: 1.2rem 2vw; }
+            .doctor-grid { grid-template-columns: 1fr 1fr; gap: 18px; }
+            .profile-dropdown { top: 14px; right: 15px; }
+        }
+        @media (max-width: 600px) {
+            .doctor-card { padding: 1.1rem 1vw; }
+            .doctor-grid { grid-template-columns: 1fr; }
+            .logo { width: 58px; height: 58px; font-size: 1.08em; }
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+
+    <div class="doctor-card position-relative">
+        <!-- Dropdown perfil -->
+        <div class="profile-dropdown text-end">
+            <div class="dropdown">
+                <a class="btn btn-success dropdown-toggle" href="#" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle"></i> Mi Perfil
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-person-square"></i> Mi Perfil</a></li>
+                    <li><a th:href="@{/agenda-medica}" class="dropdown-item"><i class="bi bi-calendar-week"></i> Agenda Médica</a></li>
+                    <li><a th:href="@{/especialidades}" class="dropdown-item"><i class="bi bi-clipboard2-pulse"></i> Especialidad(es)</a></li>
+                    <li><a th:href="@{/historial}" class="dropdown-item"><i class="bi bi-clock-history"></i> Historial de Citas</a></li>
+                    <li><a th:href="@{/pacientes}" class="dropdown-item"><i class="bi bi-people"></i> Mis Pacientes</a></li>
+                    <li><a th:href="@{/reporte}" class="dropdown-item"><i class="bi bi-bar-chart-line-fill"></i> Reporte de Atenciones</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- Icono y bienvenida -->
+        <div class="logo">
+            <i class="fas fa-user-md"></i>
+        </div>
+        <div class="doctor-slogan mb-2">Panel del Médico</div>
+        <div class="doctor-welcome-msg" th:if="${loggedInEmail}">
+            <i class="bi bi-person-circle"></i> Bienvenido Dr(a). <b th:text="${loggedInEmail}"></b>
+        </div>
+        <!-- Opciones principales del médico -->
+        <div class="doctor-grid">
+            <a th:href="@{/agenda-medica}" class="doctor-nav-btn">
+                <i class="bi bi-calendar-week"></i>
+                Agenda Médica
+            </a>
+            <a th:href="@{/especialidades}" class="doctor-nav-btn">
+                <i class="bi bi-clipboard2-pulse"></i>
+                Gestión de Especialidades
+            </a>
+            <a th:href="@{/horarios}" class="doctor-nav-btn">
+                <i class="bi bi-calendar-check"></i>
+                Disponibilidad y Horarios
+            </a>
+			<a th:href="@{/doctor/historial}" class="doctor-nav-btn">
+			    <i class="bi bi-clock-history"></i>
+			    Historial de Citas
+			</a>
+            <a th:href="@{/pacientes}" class="doctor-nav-btn">
+                <i class="bi bi-people"></i>
+                Lista de Pacientes Asignados
+            </a>
+            <a th:href="@{/notificaciones}" class="doctor-nav-btn">
+                <i class="bi bi-bell"></i>
+                Notificaciones de Citas
+            </a>
+            <a th:href="@{/doctor/citas-reprogramadas}" class="doctor-nav-btn">
+                <i class="bi bi-arrow-repeat"></i>
+                Citas Reprogramadas
+            </a>
+            <a th:href="@{/reporte}" class="doctor-nav-btn">
+                <i class="bi bi-bar-chart-line-fill"></i>
+                Reporte de Atención
+            </a>
+        </div>
+    </div>
+    <footer class="footer">
+        &copy; 2025 Citas Médicas • Panel del Médico • Tu salud y atención importan
+    </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

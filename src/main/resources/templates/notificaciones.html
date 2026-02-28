@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notificaciones de Citas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #f8fafc 0%, #e3f6fe 100%); font-family: 'Segoe UI', Arial; }
+        .noti-card { background: #fff; border-radius: 20px; box-shadow: 0 4px 22px rgba(13, 110, 253, 0.08); padding: 3rem 3vw 2.3rem 3vw; max-width: 650px; margin: 45px auto; }
+        .noti-title { color: #0d6efd; text-align: center; font-size: 2em; font-weight: bold; margin-bottom: 28px; }
+        .cita-noti { background: #f0f7ff; border-left: 5px solid #0d6efd; border-radius: 9px; padding: 19px 18px 12px 22px; margin-bottom: 23px; }
+        .cita-noti strong { color: #198754; }
+        .cita-fecha, .cita-paciente, .cita-motivo { font-size: 1.07em; }
+        .cita-fecha { color: #0d6efd; font-weight: 600;}
+        .vac { color:#888; font-style: italic; text-align:center;}
+        .btn-panel { margin-top: 36px; display: block; width: 70%; max-width:260px; margin-left: auto; margin-right: auto;}
+    </style>
+</head>
+<body>
+<div class="noti-card">
+    <div class="noti-title">Notificaciones de Nuevas Citas</div>
+    <!-- Si no hay notificaciones -->
+    <div th:if="${#lists.isEmpty(nuevasCitas)}" class="vac">
+        No tienes notificaciones nuevas.
+    </div>
+    
+    <!-- Itera sobre cada nueva cita (solo información, sin botones) -->
+    <div th:each="cita : ${nuevasCitas}" class="cita-noti">
+        <div>
+            <span class="cita-fecha">
+                <i class="bi bi-calendar-event"></i>
+                <span th:text="'Fecha: ' + ${cita.dateTime}"></span>
+                <span class="badge bg-warning text-dark ms-2" th:if="${cita.status == 'PENDIENTE_REPROGRAMACION'}">Reprogramación pendiente</span>
+            </span>
+        </div>
+        <div class="cita-paciente">
+            <i class="bi bi-person"></i>
+            Paciente: <strong th:text="${cita.patient.firstName + ' ' + cita.patient.lastName}"></strong> |
+            DNI: <span th:text="${cita.patient.dni}"></span>
+        </div>
+        <div class="cita-motivo mt-1">
+            <i class="bi bi-clipboard2"></i>
+            Área Médica: <span th:text="${cita.areaMedica}"></span>
+        </div>
+        <!-- Aquí ya no hay botones -->
+    </div>
+    
+    <!-- Regresar al Panel -->
+    <a href="/doctor/dashboard" class="btn btn-secondary btn-panel">
+        <i class="bi bi-arrow-left-circle"></i> Regresar al Panel
+    </a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Para los iconos de Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</body>
+</html>

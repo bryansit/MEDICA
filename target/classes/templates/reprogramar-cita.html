@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reprogramar Cita - Citas Médicas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .main-card {
+            background: #fff;
+            border-radius: 22px;
+            box-shadow: 0 8px 34px rgba(13,110,253,0.09);
+            max-width: 550px;
+            width: 97vw;
+            padding: 2.5rem 2.1rem 2.2rem 2.1rem;
+            margin: 48px auto 24px auto;
+        }
+        h2 {
+            color: #0d6efd;
+            text-align: center;
+            font-weight: 700;
+        }
+        .table th, .table td { text-align: center; vertical-align: middle; }
+        .alert { margin-bottom: 20px; border-radius: 10px; }
+        .volver-btn {
+            margin-top: 25px;
+            border-radius: 12px;
+            padding: 7px 28px;
+            background: #6c757d;
+            color: #fff;
+        }
+        .volver-btn:hover { background: #495057; color: #fff; }
+    </style>
+</head>
+<body>
+<div class="main-card">
+    <h2>Reprogramar Cita</h2>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    
+    <div th:if="${#lists.isEmpty(citas)}" class="alert alert-info">
+        No tienes citas pendientes para reprogramar.
+    </div>
+    
+    <div th:unless="${#lists.isEmpty(citas)}">
+        <form th:action="@{/reprogramar}" method="post">
+            <div class="mb-3">
+                <label class="form-label">Selecciona cita</label>
+                <select class="form-select" name="citaId" required>
+                    <option value="" disabled selected>Selecciona una cita</option>
+                    <option th:each="cita : ${citas}" th:value="${cita.id}"
+                            th:text="${cita.areaMedica + ' - ' + cita.fechaConsulta}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="fecha" class="form-label">Nueva fecha</label>
+                <input type="date" class="form-control" id="fecha" name="fecha" required>
+            </div>
+            <div class="mb-3">
+                <label for="hora" class="form-label">Nueva hora</label>
+                <input type="time" class="form-control" id="hora" name="hora" required>
+            </div>
+			<div class="mb-3">
+			    <label for="motivo" class="form-label">Motivo de reprogramación (explica brevemente)</label>
+			    <textarea id="motivo" name="motivo" class="form-control" rows="2" maxlength="250" required placeholder="Ejemplo: Asunto familiar, trabajo, salud, etc."></textarea>
+			</div>
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-arrow-repeat"></i> Reprogramar Cita
+            </button>
+        </form>
+    </div>
+    <div class="text-center mt-2">
+        <a href="/index" class="volver-btn">
+            <i class="bi bi-arrow-left-circle"></i> Volver al panel
+        </a>
+    </div>
+</div>
+
+<!-- Modal Bootstrap para aviso de confirmación pendiente -->
+<div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="confirmacionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <div class="modal-header" style="border-bottom: none;">
+        <h5 class="modal-title" id="confirmacionModalLabel">
+          <i class="bi bi-hourglass-split"></i> Solicitud en proceso
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-center">
+        Tu solicitud de reprogramación fue enviada.<br>
+        <b>Debes esperar la confirmación del médico.</b>
+        <div class="mt-2" style="font-size:1.9em; color: #0d6efd;">
+            <i class="bi bi-envelope-paper"></i>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top: none;">
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Entendido</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:if="${success}" th:inline="javascript">
+    var myModal = new bootstrap.Modal(document.getElementById('confirmacionModal'));
+    myModal.show();
+</script>
+</body>
+</html>
